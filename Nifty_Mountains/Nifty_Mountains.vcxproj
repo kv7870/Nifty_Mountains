@@ -199,6 +199,7 @@
     <ClCompile Include="draw.cpp" />
     <ClCompile Include="initialization.cpp" />
     <ClCompile Include="levelFour_1.cpp" />
+    <ClCompile Include="levelFour_2.cpp" />
     <ClCompile Include="levelThree.cpp" />
     <ClCompile Include="Nifty_Mountains.cpp" />
     <ClCompile Include="stdafx.cpp">

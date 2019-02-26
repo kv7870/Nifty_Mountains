@@ -13,14 +13,12 @@ using namespace std;
 const int ROW = 480;
 const int COL = 844;
 
-//function picks an arbitrary starting column, and performs greedy walk
-//to the east and to the west from that point (option 1 of above and beyond) 
-void levelFour_1(const int &min, const int &max, const apmatrix<int> &elevation, ALLEGRO_DISPLAY * display) {
-	
-	//store the sequence of vertices (graph theory) that comprise the current path 
-	vector<int> currentPath(COL, -1);
 
-	//stores the sequence of vertices that form the shortest path 
+//for each row, function picks the column with the lowest elevation, and performs greedy walk 
+//to the east and to the west from that point (option 3 of above and beyond) 
+void levelFour_2(const int &min, const int &max, const apmatrix<int> &elevation, ALLEGRO_DISPLAY * display) {
+
+	//stores the sequence of vertices (not matrix index) that form the shortest path 
 	vector<int> shortestPath(COL);
 
 	//total elevation change of path with lowest elevation change 
@@ -29,7 +27,7 @@ void levelFour_1(const int &min, const int &max, const apmatrix<int> &elevation,
 	//stores values of subsequent columns in a given direction
 	//if elements are in ascending order, path is moving eastward, and vice versa 
 	int jIndex[COL - 1];
-	
+
 	//j dimension; for clarity
 	int jDim = COL - 1;
 
@@ -37,17 +35,23 @@ void levelFour_1(const int &min, const int &max, const apmatrix<int> &elevation,
 	int iDim = ROW;
 
 	//number of searches to perform for each row;
-	//for level 4 option 1, starting column is arbitrarily chosen, so must search 
-	//both eastward and westward from that point, i.e. perform 2 searches per row
+	//for level 4 option 3, lowest elevation isn't necessarily at column 0 or 843, 
+	//so must search both eastward and westward from that point (perform 2 searches per row)
 	int searchCount = 2;
 
-	//stores the row from which the shortest path originates
+	//stores the starting row from which the shortest path originates
 	int minStartRow = 0;
+
+	//store the sequence of vertices that comprise the current path 
+	vector<int> currentPath(COL, -1);
+
+	//stores column at which lowest elevation occurs 
+	int minIndex = 0;
 
 	//draw mountains 
 	drawMap(min, max, elevation, display);
 
-	//calculate path for every row  
+	//calculate path for every row (i dimension is simply ROW) 
 	for (int i = 0; i < iDim; i++) {
 
 		//current row is initialized to the path's starting row
@@ -56,28 +60,35 @@ void levelFour_1(const int &min, const int &max, const apmatrix<int> &elevation,
 		//total elevation change in current row 
 		int totalChange = 0;
 
-		//generate random column to act as starting column; path will propagate to the east and to the west of this column
-		int r = rand() % (COL - 2) + 1;
+		//stores lowest elevation in current row 
+		int min = INT_MAX;
 
-		//this loop first generates a path eastward from the starting column (iteration 1),
-		//then generates a path westward from the starting column (iteration 2) 
+		//find the column with the lowest elevation 
+		for (int j = 0; j < COL; j++) {
+			if (elevation[i][j] < min) {
+				min = elevation[i][j];
+				minIndex = j;
+			}
+		}
+
+		//this loops first generates a path eastward from the starting column (iteration 1), then generates a path westward from starting column (iteration 2) 
 		for (int n = 0; n < searchCount; n++) {
 			int count = 0;
 
 			//when n == 0, search will be eastward
 			if (n == 0) {
-				//starting from jIndex[0], populate subsequent (jDim - r) number of jIndex elements with values 
-				//that represent each column to the RIGHT of the starting point
-				for (int j = r; j < jDim; j++) {
+				//starting from jIndex[0], populate subsequent (jDim - r) number of elements of jIndex with values that 
+				//represent each column to the RIGHT of the starting point
+				for (int j = minIndex; j < jDim; j++) {
 					jIndex[count++] = j;
 				}
 			}
 
 			//when n == 1, search will be westward 
 			else {
-				for (int j = r; j > 0; j--) {
-					//starting from jIndex[0], populate subsequent (jDim - r) number of jIndex elements with values 
-					//that represent each column to the LEFT of the starting point
+				for (int j = minIndex; j > 0; j--) {
+					//starting from jIndex[0], populate subsequent (jDim - r) number of elements of jIndex with values that 
+					//represent each column to the LEFT of the starting point
 					jIndex[count++] = j;
 				}
 			}
@@ -88,25 +99,22 @@ void levelFour_1(const int &min, const int &max, const apmatrix<int> &elevation,
 			totalChange += drawLowestElevPath(elevation, shortestPath, minTotalChange, currRow, jIndex, count, currentPath);
 		}
 
-		//remember current path if it yields a smaller elevation change than previous paths 
+
+		//remember current path if it yields smaller elevation change than previous paths 
 		if (totalChange < minTotalChange) {
 			minTotalChange = totalChange;
 			shortestPath = currentPath;
-
-			//on n==2 (moving westward), the rth element of shortestPath will yield the row # at the westmost column, 
-			//since shortestPath stores column sequence as follows: random starting column (RSC), RSC+1, RSC+2 ... 843, RSC -1, RSC -2 ... R
-			minStartRow = r;
+			minStartRow = minIndex;
 		}
 
-		
-		cout << "row :" << currRow << " " << "Total elev. change: " << totalChange << endl;;
+		cout << "row :" << currRow << " " << "Total elev. change: " << totalChange << endl;
 	}
 
 
-	//find the row corresponding to column = 0
+	//find the row # when column = 0
 	int startRow = indexOfLowestElevPath(shortestPath, minTotalChange, minStartRow);
 
-	//draw shortest path (in green) 
+	//draw shortest path (green) 
 	drawBestPath(startRow, shortestPath);
 
 	cout << endl;

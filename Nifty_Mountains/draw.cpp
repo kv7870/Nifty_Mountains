@@ -2,10 +2,6 @@
 #include <iostream>
 #include <vector>
 #include <allegro5/allegro.h> 
-#include <allegro5/allegro_font.h>
-#include <allegro5/allegro_ttf.h>
-#include <allegro5/allegro_image.h>
-#include <allegro5/allegro_native_dialog.h>
 #include <allegro5/allegro_primitives.h>
 #include <fstream>
 #include <algorithm>
@@ -16,8 +12,6 @@
 using namespace std;
 const int ROW = 480;
 const int COL = 844;
-
-
 
 //draws the shortest path
 void drawBestPath(const int &startRow, const vector<int> &shortestPath) {
@@ -49,14 +43,13 @@ void drawMap(const int &min, const int &max, const apmatrix<int> &elevation, ALL
 		for (j = 0; j < COL; j++) {
 			c = round((elevation[i][j] - min)*weightedShade);
 
-
-			ALLEGRO_COLOR color = al_map_rgb(c, c, c);
-			al_draw_filled_rectangle(j, i, j + 1, i + 1, color);
-			al_flip_display();
+			//ALLEGRO_COLOR color = al_map_rgb(c, c, c);
+			//al_draw_filled_rectangle(j, i, j + 1, i + 1, color);
+			//al_flip_display();
 		}
-		cout << i << endl;
 	}
 }
+		
 
 
 
