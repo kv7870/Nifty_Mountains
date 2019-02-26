@@ -42,9 +42,9 @@ void drawMap(const int &min, const int &max, const apmatrix<int> &elevation, ALL
 		for (j = 0; j < COL; j++) {
 			c = round((elevation[i][j] - min)*weightedShade);
 
-			//ALLEGRO_COLOR color = al_map_rgb(c, c, c);
-			//al_draw_filled_rectangle(j, i, j + 1, i + 1, color);
-			//al_flip_display();
+			ALLEGRO_COLOR color = al_map_rgb(c, c, c);
+			al_draw_filled_rectangle(j, i, j + 1, i + 1, color);
+			al_flip_display();
 		}
 	}
 }
