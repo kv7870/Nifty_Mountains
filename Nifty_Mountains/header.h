@@ -1,4 +1,3 @@
-#pragma once
 #include "apmatrix.h"
 #include <vector>
 using namespace std; 
