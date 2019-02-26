@@ -196,7 +196,10 @@
     <ClInclude Include="targetver.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="draw.cpp" />
     <ClCompile Include="initialization.cpp" />
+    <ClCompile Include="levelFour_1.cpp" />
+    <ClCompile Include="levelThree.cpp" />
     <ClCompile Include="Nifty_Mountains.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
